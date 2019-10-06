@@ -148,16 +148,21 @@ def eval(dataloader):
 		outputs = net(images)
 		loss = criterion(outputs, labels)
 		test_loss += loss.item()
-		_, preds = outputs.max(1)
-		correct += preds.eq(labels).sum()
-	return test_loss / len(dataloader.dataset), correct.float() / len(dataloader.dataset)
+		# _, preds = outputs.max(1)
+		# correct += preds.eq(labels).sum()
+		_, pred = torch.max(outputs, 1) 
+		correct += (pred == labels).sum().item()
+	return test_loss / len(dataloader.dataset), correct*1.0 / len(dataloader.dataset)
+
+with open('resnet_tinyimagenet.dat', 'w') as f:
+	f.write('')
 
 if __name__=='__main__':
 	num_epochs = 1000
 	for epoch in range(num_epochs):
 		train()
-		test_loss,test_acc = eval(testloader)
-		train_loss,train_acc  =eval(trainloader)
+		test_loss,test_acc = eval(val_loader)
+		train_loss,train_acc = eval(train_loader)
 		train_scheduler.step(epoch)
 		print('Epoch:%d, test_loss:%f, test_accuracy:%f, train_loss:%f, train_accuracy:%f' \
 				% (epoch,test_loss,test_acc,train_loss,train_acc))

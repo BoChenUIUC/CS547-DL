@@ -77,6 +77,9 @@ def eval(dataloader):
 		correct += preds.eq(labels).sum()
 	return test_loss / len(dataloader.dataset), correct.float() / len(dataloader.dataset)
 
+with open('pretrained_cifar100.dat', 'w') as f:
+	f.write('')
+	
 if __name__=='__main__':
 	num_epochs = 1000
 	for epoch in range(num_epochs):
