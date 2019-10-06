@@ -109,7 +109,6 @@ class ResNet(nn.Module):
 
 		return output 
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 net = ResNet(BasicBlock,[2,4,4,2],100)
 for param in net.parameters():
     tensor0 = param.data
@@ -119,22 +118,25 @@ net.cuda()
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4)
-L_train = len(trainloader)
-L_test = len(testloader)
 
 
 def train():
 	net.train()
 	for batch_idx, (images, labels) in enumerate(trainloader):
-		images = images.to(device)
-		labels = labels.to(device)
+		images = images.cuda()
+		labels = labels.cuda()
 
 		optimizer.zero_grad()
 		outputs = net(images)                
 		loss = criterion(outputs, labels)    
-		loss.backward()                      
+		loss.backward()
+		for param in net.parameters():
+            tensor0 = param.grad.data.cpu()
+            dist.all_reduce(tensor0, op=dist.reduce_op.SUM)
+            tensor0 /= float(num_nodes)
+            param.grad.data = tensor0.cuda()                      
 		optimizer.step()
-		if batch_idx%50==0: 
+		if batch_idx%100==99: 
 			print(batch_idx,loss.item())
 
 def eval():
@@ -142,14 +144,15 @@ def eval():
 	test_loss = 0.0 
 	correct = 0.0
 	for batch_idx, (images, labels) in enumerate(testloader):
-		images = images.to(device)
-		labels = labels.to(device)
+		images = images.cuda()
+		labels = labels.cuda()
 
 		outputs = net(images)
 		loss = criterion(outputs, labels)
 		test_loss += loss.item()
 		_, preds = outputs.max(1)
 		correct += preds.eq(labels).sum()
+	
 	return test_loss / len(testloader.dataset), correct.float() / len(testloader.dataset)
 
 if __name__=='__main__':

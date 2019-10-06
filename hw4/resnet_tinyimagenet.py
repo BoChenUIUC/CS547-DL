@@ -134,7 +134,7 @@ def train():
 		loss = criterion(outputs, labels)    
 		loss.backward()                      
 		optimizer.step()
-		if batch_idx%50==0: 
+		if batch_idx%200==199: 
 			print(batch_idx,loss.item())
 
 def eval():
@@ -150,6 +150,7 @@ def eval():
 		test_loss += loss.item()
 		_, preds = outputs.max(1)
 		correct += preds.eq(labels).sum()
+	print(correct,len(val_loader.dataset))
 	return test_loss / len(val_loader.dataset), correct.float() / len(val_loader.dataset)
 
 if __name__=='__main__':
