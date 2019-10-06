@@ -105,7 +105,7 @@ transform_train = transforms.Compose([
 train_dir = '/u/training/tra169/scratch/tiny-imagenet-200/train'
 train_dataset = torchvision.datasets.ImageFolder(train_dir, transform=transform_train)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=100, shuffle=True, num_workers=8)
-val_dir = '/u/training/tra169/scratch/tiny-imagenet-200/val/images'
+val_dir = '/u/training/tra169/scratch/tiny-imagenet-200/val'
 if 'val_' in os.listdir(val_dir)[0]:
 	create_val_folder(val_dir)
 else:
