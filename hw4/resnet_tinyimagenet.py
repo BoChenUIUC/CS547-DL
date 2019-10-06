@@ -91,9 +91,18 @@ def create_val_folder(val_dir):
 			os.rename(os.path.join(path, img), os.path.join(newpath, img))
 	return
 
+TINY_TRAIN_MEAN, TINY_TRAIN_STD =(0.485, 0.456, 0.406), (0.229, 0.224, 0.225)
+
+transform_train = transforms.Compose([
+	transforms.RandomCrop(64, padding=4),
+	transforms.RandomHorizontalFlip(),
+	transforms.RandomRotation(15),
+	transforms.ToTensor(),
+	transforms.Normalize(TINY_TRAIN_MEAN, TINY_TRAIN_STD)
+	])
 
 train_dir = '/u/training/tra169/scratch/tiny-imagenet-200/train'
-train_dataset = torchvision.datasets.ImageFolder(train_dir, transform=transform)
+train_dataset = torchvision.datasets.ImageFolder(train_dir, transform=transform_train)
 print(train_dataset.class_to_idx)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=8)
 val_dir = '/u/training/tra169/scratch/tiny-imagenet-200/val/images'
@@ -107,6 +116,7 @@ val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shu
 
 net = ResNet(BasicBlock,[2,4,4,2],200)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print("Available:",torch.cuda.is_available())
 net.to(device)
 
 criterion = nn.CrossEntropyLoss()
