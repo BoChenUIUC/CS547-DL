@@ -1,7 +1,8 @@
 import torch
+import torch.nn as nn
+import torch.utils.model_zoo as model_zoo
 import torchvision
 import torchvision.transforms as transforms
-import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim     
 from torch.autograd import Variable 
@@ -29,14 +30,23 @@ trainloader = torch.utils.data.DataLoader(trainset, batch_size=100, shuffle=True
 testset = torchvision.datasets.CIFAR100(root='~/scratch/.', train=False,download=False, transform=transform_test)
 testloader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False, num_workers=8)
 
+model_urls = {
+    'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',
+    'resnet34': 'https://download.pytorch.org/models/resnet34-333f7ec4.pth',
+    'resnet50': 'https://download.pytorch.org/models/resnet50-19c8e357.pth',
+    'resnet101': 'https://download.pytorch.org/models/resnet101-5d3b4d8f.pth',
+    'resnet152': 'https://download.pytorch.org/models/resnet152-b121ed2d.pth',
+}
+# Loading the data
+
 def resnet18(pretrained=True):
-	model = torchvision.models.resnet.ResNet(
-		torchvision.models.resnet.BasicBlock, [2, 2, 2, 2])
-	if pretrained:
-		model.load_state_dict(torch.utils.model_zoo.load_url(
-			model_urls['resnet18'],model_dir='./'))
-	return model
+    model = torchvision.models.resnet.ResNet(torchvision.models.resnet.BasicBlock, [2, 2, 2, 2])
+    if pretrained:
+        model.load_state_dict(model_zoo.load_url(model_urls['resnet18'],model_dir='~/scratch/'))
+    return model
+
 net = resnet18(pretrained=True)
+net.fc = nn.Linear(net.fc.in_features, 100)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 net.to(device)
@@ -79,7 +89,7 @@ def eval(dataloader):
 
 with open('pretrained_cifar100.dat', 'w') as f:
 	f.write('')
-	
+
 if __name__=='__main__':
 	num_epochs = 1000
 	for epoch in range(num_epochs):
