@@ -33,7 +33,7 @@ def resnet18(pretrained=True):
 	model = torchvision.models.resnet.ResNet(
 		torchvision.models.resnet.BasicBlock, [2, 2, 2, 2])
 	if pretrained:
-		model.load_state_dict(model_zoo.load_url(
+		model.load_state_dict(torch.utils.model_zoo.load_url(
 			model_urls['resnet18'],model_dir='./'))
 	return model
 net = resnet18(pretrained=True)
