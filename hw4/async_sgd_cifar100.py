@@ -18,3 +18,13 @@ trainloader = torch.utils.data.DataLoader(trainset, batch_size=100, shuffle=True
 # For testing data
 testset = torchvision.datasets.CIFAR100(root='~/scratch/.', train=False,download=True, transform=transform)
 testloader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False, num_workers=8)
+
+num_epochs = 1000
+
+
+def train():
+	device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+	for epoch in range(num_epochs):
+		for batch_idx, (images, labels) in enumerate(trainloader):
+			images = images.to(device)
+			labels = labels.to(device)
