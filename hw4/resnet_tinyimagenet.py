@@ -38,7 +38,7 @@ class ResNet(nn.Module):
 		self.conv3_x = self._make_layer(basic_block, 32, 64, num_blocks[1], 2)
 		self.conv4_x = self._make_layer(basic_block, 64, 128, num_blocks[2], 2)
 		self.conv5_x = self._make_layer(basic_block, 128, 256, num_blocks[3], 2)
-		self.pool = nn.MaxPool2d(4, 4)
+		self.pool = nn.MaxPool2d(8, 8)
 		self.fc = nn.Linear(256, num_classes)
 
 	def _make_layer(self, block, in_channels, out_channels, num_blocks, stride):
