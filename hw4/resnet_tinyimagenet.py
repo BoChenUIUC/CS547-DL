@@ -103,16 +103,14 @@ transform_train = transforms.Compose([
 
 train_dir = '/u/training/tra169/scratch/tiny-imagenet-200/train'
 train_dataset = torchvision.datasets.ImageFolder(train_dir, transform=transform_train)
-print(train_dataset.class_to_idx)
-train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=8)
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=100, shuffle=True, num_workers=8)
 val_dir = '/u/training/tra169/scratch/tiny-imagenet-200/val/images'
 if 'val_' in os.listdir(val_dir)[0]:
 	create_val_folder(val_dir)
 else:
 	pass
 val_dataset = torchvision.datasets.ImageFolder(val_dir, transform=transforms.ToTensor())
-print(val_dataset.class_to_idx)
-val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=8)
+val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=100, shuffle=False, num_workers=8)
 
 net = ResNet(BasicBlock,[2,4,4,2],200)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
