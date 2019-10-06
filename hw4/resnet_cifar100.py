@@ -93,7 +93,7 @@ net.to(device)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4)
-# train_scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[60, 120, 160], gamma=0.2)
+train_scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[30, 60, 90], gamma=0.2)
 
 def train():
 	net.train()
@@ -127,9 +127,9 @@ def eval():
 if __name__=='__main__':
 	num_epochs = 1000
 	for epoch in range(num_epochs):
-		# train_scheduler.step(epoch)
 		train()
 		loss,acc = eval()
+		train_scheduler.step(epoch)
 		print('Epoch:%d, loss:%f, accuracy:%f' % (epoch,loss,acc))
 		with open('resnet_cifar100.dat', 'a') as f:
 		    f.write('%d\t%f\t%f\n' % (epoch,loss,acc))

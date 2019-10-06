@@ -93,7 +93,7 @@ def create_val_folder(val_dir):
 
 
 train_dir = '/u/training/tra169/scratch/tiny-imagenet-200/train'
-train_dataset = datasets.ImageFolder(train_dir, transform=transform)
+train_dataset = torchvision.datasets.ImageFolder(train_dir, transform=transform)
 print(train_dataset.class_to_idx)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=8)
 val_dir = '/u/training/tra169/scratch/tiny-imagenet-200/val/images'
@@ -101,7 +101,7 @@ if 'val_' in os.listdir(val_dir)[0]:
 	create_val_folder(val_dir)
 else:
 	pass
-val_dataset = datasets.ImageFolder(val_dir, transform=transforms.ToTensor())
+val_dataset = torchvision.datasets.ImageFolder(val_dir, transform=transforms.ToTensor())
 print(val_dataset.class_to_idx)
 val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=8)
 
@@ -110,7 +110,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 net.to(device)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
+optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4)
 train_scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[60, 120, 160], gamma=0.2)
 
 
@@ -146,9 +146,9 @@ def eval():
 if __name__=='__main__':
 	num_epochs = 1000
 	for epoch in range(num_epochs):
-		train_scheduler.step(epoch)
 		train()
 		loss,acc = eval()
+		train_scheduler.step(epoch)
 		print('Epoch:%d, loss:%f, accuracy:%f' % (epoch,loss,acc))
 		with open('resnet_tinyimagenet.dat', 'a') as f:
 		    f.write('%d\t%f\t%f\n' % (epoch,loss,acc))
