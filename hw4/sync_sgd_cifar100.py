@@ -152,7 +152,7 @@ def eval():
 		test_loss += loss.item()
 		_, preds = outputs.max(1)
 		correct += preds.eq(labels).sum()
-	
+
 	return test_loss / len(testloader.dataset), correct.float() / len(testloader.dataset)
 
 if __name__=='__main__':
@@ -161,8 +161,8 @@ if __name__=='__main__':
 		train()
 		loss,acc = eval()
 		train_scheduler.step(epoch)
-		print('Epoch:%d, loss:%f, accuracy:%f' % (epoch,loss,acc))
-		with open('resnet_cifar100.dat', 'a') as f:
-		    f.write('%d\t%f\t%f\n' % (epoch,loss,acc))
-		if acc > 0.8:
+		print('[%d]Epoch:%d, loss:%f, accuracy:%f' % (rank,epoch,loss,acc))
+		with open('sync_sgd_cifar100.dat', 'a') as f:
+		    f.write('%d\t%d\t%f\t%f\n' % (rank,epoch,loss,acc))
+		if acc > 0.65:
 			break

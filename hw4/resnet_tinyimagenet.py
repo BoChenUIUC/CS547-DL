@@ -137,11 +137,11 @@ def train():
 		if batch_idx%200==199: 
 			print(batch_idx,loss.item())
 
-def eval():
+def eval(dataloader):
 	net.eval()
 	test_loss = 0.0 
 	correct = 0.0
-	for batch_idx, (images, labels) in enumerate(val_loader):
+	for batch_idx, (images, labels) in enumerate(dataloader):
 		images = images.to(device)
 		labels = labels.to(device)
 
@@ -150,17 +150,18 @@ def eval():
 		test_loss += loss.item()
 		_, preds = outputs.max(1)
 		correct += preds.eq(labels).sum()
-	print(correct,len(val_loader.dataset))
-	return test_loss / len(val_loader.dataset), correct.float() / len(val_loader.dataset)
+	return test_loss / len(dataloader.dataset), correct.float() / len(dataloader.dataset)
 
 if __name__=='__main__':
 	num_epochs = 1000
 	for epoch in range(num_epochs):
 		train()
-		loss,acc = eval()
+		test_loss,test_acc = eval(testloader)
+		train_loss,train_acc  =eval(trainloader)
 		train_scheduler.step(epoch)
-		print('Epoch:%d, loss:%f, accuracy:%f' % (epoch,loss,acc))
+		print('Epoch:%d, test_loss:%f, test_accuracy:%f, train_loss:%f, train_accuracy:%f' \
+				% (epoch,test_loss,test_acc,train_loss,train_acc))
 		with open('resnet_tinyimagenet.dat', 'a') as f:
-		    f.write('%d\t%f\t%f\n' % (epoch,loss,acc))
-		if acc > 0.8:
+		    f.write('%d\t%f\t%f\t%f\t%f\n' % (epoch,test_loss,test_acc,train_loss,train_acc))
+		if test_acc > 0.55:
 			break
