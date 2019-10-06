@@ -92,8 +92,8 @@ net = ResNet(BasicBlock,[2,4,4,2],100)
 net.to(device)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
-train_scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[60, 120, 160], gamma=0.2)
+optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4)
+# train_scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[60, 120, 160], gamma=0.2)
 
 def train():
 	net.train()
@@ -127,7 +127,7 @@ def eval():
 if __name__=='__main__':
 	num_epochs = 1000
 	for epoch in range(num_epochs):
-		train_scheduler.step(epoch)
+		# train_scheduler.step(epoch)
 		train()
 		loss,acc = eval()
 		print('Epoch:%d, loss:%f, accuracy:%f' % (epoch,loss,acc))
