@@ -146,6 +146,8 @@ def eval(dataloader):
 		labels = Variable(labels).cuda()
 
 		outputs = net(images) # 100x100
+		if batch_idx==0:
+			print(outputs.shape)
 		loss = criterion(outputs, labels)
 		test_loss += loss.data[0]
 		_, preds = outputs.max(1)
