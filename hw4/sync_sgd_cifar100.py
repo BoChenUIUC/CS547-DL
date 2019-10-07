@@ -118,8 +118,8 @@ for param in net.parameters():
 net.cuda()
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
-train_scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[5, 15, 30, 60], gamma=0.2)
+optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4)
+# train_scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[5, 15, 30, 60], gamma=0.2)
 
 
 def train():
@@ -161,7 +161,7 @@ if __name__=='__main__':
 		train()
 		test_loss,test_acc = eval(testloader)
 		train_loss,train_acc  =eval(trainloader)
-		train_scheduler.step(epoch)
+		# train_scheduler.step(epoch)
 		print('%d\t%d\t%f\t%f\t%f\t%f' % (rank,epoch,test_loss,test_acc,train_loss,train_acc))
 		if test_acc > 0.65:
 			break
