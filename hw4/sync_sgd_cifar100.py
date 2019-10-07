@@ -146,12 +146,13 @@ def eval(dataloader):
 		labels = Variable(labels).cuda()
 
 		outputs = net(images) # 100x100
-		if batch_idx==0:
-			print(outputs.shape)
 		loss = criterion(outputs, labels)
 		test_loss += loss.data[0]
 		_, preds = outputs.max(1)
 		correct += preds.eq(labels).sum()
+		if batch_idx==0:
+			print(outputs.shape,preds.shape,labels.shape)
+			print(correct,correct.data[0])
 	print(correct.data[0],len(dataloader.dataset))
 	return test_loss / len(dataloader.dataset), correct.data[0] / len(dataloader.dataset)
 
