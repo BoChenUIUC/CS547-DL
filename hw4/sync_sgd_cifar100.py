@@ -124,8 +124,8 @@ optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4
 def train():
 	net.train()
 	for batch_idx, (images, labels) in enumerate(trainloader):
-		images = images.cuda()
-		labels = labels.cuda()
+		images = Variable(images).cuda()
+		labels = Variable(labels).cuda()
 
 		optimizer.zero_grad()
 		outputs = net(images)                
@@ -145,8 +145,8 @@ def eval(dataloader):
 	test_loss = 0.0 
 	correct = 0.0
 	for batch_idx, (images, labels) in enumerate(dataloader):
-		images = images.cuda()
-		labels = labels.cuda()
+		images = Variable(images).cuda()
+		labels = Variable(labels).cuda()
 
 		outputs = net(images)
 		loss = criterion(outputs, labels)
