@@ -118,7 +118,7 @@ for param in net.parameters():
 net.cuda()
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9, weight_decay=5e-4)
+optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4)
 # train_scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[5, 15, 30, 60], gamma=0.2)
 
 
