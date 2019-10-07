@@ -149,8 +149,9 @@ def eval(dataloader):
 		loss = criterion(outputs, labels)
 		test_loss += loss.data[0]
 		_, preds = outputs.max(1)
-		correct += preds.eq(labels).sum()
-		print(batch_idx,outputs.shape,preds.shape,labels.shape,correct.data[0],len(dataloader.dataset))
+		cor = preds.eq(labels).sum()
+		correct += cor
+		print(rank,batch_idx,outputs.shape,preds.shape,labels.shape,cor.data[0],len(dataloader.dataset))
 	return test_loss / len(dataloader.dataset), correct.data[0] / len(dataloader.dataset)
 
 if __name__=='__main__':
