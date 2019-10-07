@@ -150,10 +150,7 @@ def eval(dataloader):
 		test_loss += loss.data[0]
 		_, preds = outputs.max(1)
 		correct += preds.eq(labels).sum()
-		if batch_idx==0:
-			print(outputs.shape,preds.shape,labels.shape)
-			print(correct,correct.data[0])
-	print(correct.data[0],len(dataloader.dataset))
+		print(batch_idx,outputs.shape,preds.shape,labels.shape,correct.data[0],len(dataloader.dataset))
 	return test_loss / len(dataloader.dataset), correct.data[0] / len(dataloader.dataset)
 
 if __name__=='__main__':
