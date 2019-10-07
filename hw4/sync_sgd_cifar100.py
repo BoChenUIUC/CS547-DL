@@ -1,4 +1,3 @@
-# >>init
 import torch.distributed as dist
 import os
 import subprocess
@@ -29,7 +28,6 @@ os.environ['MASTER_PORT'] = '2222'
 backend = 'mpi'
 dist.init_process_group(backend, rank=rank, world_size=num_nodes)
 dtype = torch.FloatTensor
-# >>init
 
 CIFAR100_TRAIN_MEAN = (0.5070751592371323, 0.48654887331495095, 0.4409178433670343)
 CIFAR100_TRAIN_STD = (0.2673342858792401, 0.2564384629170883, 0.27615047132568404)
@@ -152,7 +150,7 @@ def eval(dataloader):
 		test_loss += loss.data[0]
 		_, preds = outputs.max(1)
 		correct += preds.eq(labels).sum()
-
+	print(correct.data[0],len(dataloader.dataset))
 	return test_loss / len(dataloader.dataset), correct.data[0] / len(dataloader.dataset)
 
 if __name__=='__main__':
