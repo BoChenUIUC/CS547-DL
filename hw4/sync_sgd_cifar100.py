@@ -150,9 +150,10 @@ def eval(dataloader):
 		test_loss += loss.data[0]
 		_, preds = outputs.max(1)
 		cor = preds.eq(labels).sum()
-		correct += cor
-		print(rank,batch_idx,outputs.shape,preds.shape,labels.shape,cor.data[0],len(dataloader.dataset))
-	return test_loss / len(dataloader.dataset), correct.data[0] / len(dataloader.dataset)
+		correct += cor.data[0]
+		if rank==0:
+			print(batch_idx,cor.data[0],correct,len(dataloader.dataset))
+	return test_loss / len(dataloader.dataset), correct / len(dataloader.dataset)
 
 if __name__=='__main__':
 	num_epochs = 500
