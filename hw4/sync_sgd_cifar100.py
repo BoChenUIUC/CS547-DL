@@ -3,6 +3,13 @@ import torch.distributed as dist
 import os
 import subprocess
 from mpi4py import MPI
+import torch
+import torchvision
+import torchvision.transforms as transforms
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim     
+from torch.autograd import Variable 
 cmd = "/sbin/ifconfig"
 out, err = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
 	stderr=subprocess.PIPE).communicate()
@@ -21,14 +28,6 @@ backend = 'mpi'
 dist.init_process_group(backend, rank=rank, world_size=num_nodes)
 dtype = torch.FloatTensor
 # >>init
-
-import torch
-import torchvision
-import torchvision.transforms as transforms
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim     
-from torch.autograd import Variable 
 
 CIFAR100_TRAIN_MEAN = (0.5070751592371323, 0.48654887331495095, 0.4409178433670343)
 CIFAR100_TRAIN_STD = (0.2673342858792401, 0.2564384629170883, 0.27615047132568404)
