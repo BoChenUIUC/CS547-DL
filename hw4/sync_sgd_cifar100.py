@@ -157,12 +157,11 @@ def eval(dataloader):
 	return test_loss / len(dataloader.dataset), correct.float() / len(dataloader.dataset)
 
 if __name__=='__main__':
-	num_epochs = 100
+	num_epochs = 1000
 	for epoch in range(num_epochs):
 		train()
 		test_loss,test_acc = eval(testloader)
 		train_loss,train_acc  =eval(trainloader)
-		train_scheduler.step(epoch)
 		print('Epoch:%d, test_loss:%f, test_accuracy:%f, train_loss:%f, train_accuracy:%f' \
 				% (epoch,test_loss,test_acc,train_loss,train_acc))
 		with open('sync_sgd_cifar100.dat.'+str(rank), 'a') as f:
