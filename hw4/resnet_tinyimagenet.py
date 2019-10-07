@@ -153,7 +153,6 @@ def eval(dataloader):
 		# correct += preds.eq(labels).sum()
 		_, pred = torch.max(outputs, 1) 
 		correct += (pred == labels).sum().item()
-	print(correct, len(dataloader.dataset))
 	return test_loss / len(dataloader.dataset), correct*1.0 / len(dataloader.dataset)
 
 with open('resnet_tinyimagenet.dat', 'w') as f:
