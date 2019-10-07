@@ -138,7 +138,7 @@ def train():
 			param.grad.data = tensor0.cuda()                      
 		optimizer.step()
 		if batch_idx%100==99: 
-			print(batch_idx,loss.item())
+			print(batch_idx,loss)
 
 def eval(dataloader):
 	net.eval()
@@ -150,7 +150,7 @@ def eval(dataloader):
 
 		outputs = net(images)
 		loss = criterion(outputs, labels)
-		test_loss += loss.item()
+		test_loss += loss
 		_, preds = outputs.max(1)
 		correct += preds.eq(labels).sum()
 
