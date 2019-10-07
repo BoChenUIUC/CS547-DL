@@ -135,8 +135,6 @@ def train():
 		loss = criterion(outputs, labels)    
 		loss.backward()                      
 		optimizer.step()
-		if batch_idx%200==199: 
-			print(batch_idx,loss.item())
 
 def eval(dataloader):
 	net.eval()
@@ -149,14 +147,9 @@ def eval(dataloader):
 		outputs = net(images)
 		loss = criterion(outputs, labels)
 		test_loss += loss.item()
-		# _, preds = outputs.max(1)
-		# correct += preds.eq(labels).sum()
 		_, pred = torch.max(outputs, 1) 
 		correct += (pred == labels).sum().item()
 	return test_loss / len(dataloader.dataset), correct*1.0 / len(dataloader.dataset)
-
-with open('resnet_tinyimagenet.dat', 'w') as f:
-	f.write('')
 
 if __name__=='__main__':
 	num_epochs = 1000
@@ -165,9 +158,6 @@ if __name__=='__main__':
 		test_loss,test_acc = eval(val_loader)
 		train_loss,train_acc = eval(train_loader)
 		train_scheduler.step(epoch)
-		print('Epoch:%d, test_loss:%f, test_accuracy:%f, train_loss:%f, train_accuracy:%f' \
-				% (epoch,test_loss,test_acc,train_loss,train_acc))
-		with open('resnet_tinyimagenet.dat', 'a') as f:
-		    f.write('%d\t%f\t%f\t%f\t%f\n' % (epoch,test_loss,test_acc,train_loss,train_acc))
+		print('%d\t%f\t%f\t%f\t%f' % (epoch,test_loss,test_acc,train_loss,train_acc))
 		if test_acc > 0.55:
 			break

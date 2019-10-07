@@ -106,8 +106,6 @@ def train():
 		loss = criterion(outputs, labels)    
 		loss.backward()                      
 		optimizer.step()
-		if batch_idx%50==0: 
-			print(batch_idx,loss.item())
 
 def eval(dataloader):
 	net.eval()
@@ -124,9 +122,6 @@ def eval(dataloader):
 		correct += preds.eq(labels).sum()
 	return test_loss / len(dataloader.dataset), correct.float() / len(dataloader.dataset)
 
-with open('resnet_cifar100.dat', 'w') as f:
-	f.write('')
-
 if __name__=='__main__':
 	num_epochs = 1000
 	for epoch in range(num_epochs):
@@ -134,9 +129,6 @@ if __name__=='__main__':
 		test_loss,test_acc = eval(testloader)
 		train_loss,train_acc  =eval(trainloader)
 		train_scheduler.step(epoch)
-		print('Epoch:%d, test_loss:%f, test_accuracy:%f, train_loss:%f, train_accuracy:%f' \
-				% (epoch,test_loss,test_acc,train_loss,train_acc))
-		with open('resnet_cifar100.dat', 'a') as f:
-		    f.write('%d\t%f\t%f\t%f\t%f\n' % (epoch,test_loss,test_acc,train_loss,train_acc))
+		print('%d\t%f\t%f\t%f\t%f' % (epoch,test_loss,test_acc,train_loss,train_acc))
 		if test_acc > 0.65:
 			break
