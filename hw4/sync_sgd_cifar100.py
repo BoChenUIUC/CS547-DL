@@ -7,8 +7,8 @@ import torchvision
 import torchvision.transforms as transforms
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim     
-from torch.autograd import Variable 
+import torch.optim as optim
+from torch.autograd import Variable
 import numpy as np
 
 cmd = "/sbin/ifconfig"
@@ -106,7 +106,7 @@ class ResNet(nn.Module):
 		output = output.view(output.size(0), -1)
 		output = self.fc(output)
 
-		return output 
+		return output
 
 net = ResNet(BasicBlock,[2,4,4,2],100)
 for param in net.parameters():
@@ -116,7 +116,7 @@ for param in net.parameters():
 net.cuda()
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4)
+optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9, weight_decay=5e-4)
 # train_scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[5, 15, 30, 60], gamma=0.2)
 
 
@@ -127,25 +127,26 @@ def train():
 		labels = Variable(labels).cuda()
 
 		optimizer.zero_grad()
-		outputs = net(images)                
-		loss = criterion(outputs, labels)    
+		outputs = net(images)
+		loss = criterion(outputs, labels)
 		loss.backward()
 		for param in net.parameters():
 			tensor0 = param.grad.data.cpu()
 			dist.all_reduce(tensor0, op=dist.reduce_op.SUM)
 			tensor0 /= float(num_nodes)
-			param.grad.data = tensor0.cuda()                      
+			param.grad.data = tensor0.cuda()
 		optimizer.step()
 
 def eval(dataloader):
 	net.eval()
-	test_loss = 0.0 
+	test_loss = 0.0
 	correct = 0.0
 	for batch_idx, (images, labels) in enumerate(dataloader):
 		images = Variable(images).cuda()
 		labels = Variable(labels).cuda()
 
 		outputs = net(images)
+		print(outputs.shape)
 		loss = criterion(outputs, labels)
 		test_loss += loss.data[0]
 		_, preds = outputs.max(1)
