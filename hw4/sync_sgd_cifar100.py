@@ -138,7 +138,7 @@ def train():
 			param.grad.data = tensor0.cuda()                      
 		optimizer.step()
 		if batch_idx%100==99: 
-			print(batch_idx,loss)
+			print(batch_idx,loss.data[0])
 
 def eval(dataloader):
 	net.eval()
@@ -150,7 +150,7 @@ def eval(dataloader):
 
 		outputs = net(images)
 		loss = criterion(outputs, labels)
-		test_loss += loss
+		test_loss += loss.data[0]
 		_, preds = outputs.max(1)
 		correct += preds.eq(labels).sum()
 
@@ -160,13 +160,12 @@ if __name__=='__main__':
 	num_epochs = 100
 	for epoch in range(num_epochs):
 		train()
-		if rank == 0:
-			test_loss,test_acc = eval(testloader)
-			train_loss,train_acc  =eval(trainloader)
-			train_scheduler.step(epoch)
-			print('[%d]Epoch:%d, test_loss:%f, test_accuracy:%f, train_loss:%f, train_accuracy:%f' \
-					% (rank,epoch,test_loss,test_acc,train_loss,train_acc))
-			with open('sync_sgd_cifar100.dat', 'a') as f:
-			    f.write('%d\t%d\t%f\t%f\t%f\t%f\n' % (rank,epoch,test_loss,test_acc,train_loss,train_acc))
-			if test_acc > 0.65:
-				break
+		test_loss,test_acc = eval(testloader)
+		train_loss,train_acc  =eval(trainloader)
+		train_scheduler.step(epoch)
+		print('Epoch:%d, test_loss:%f, test_accuracy:%f, train_loss:%f, train_accuracy:%f' \
+				% (epoch,test_loss,test_acc,train_loss,train_acc))
+		with open('sync_sgd_cifar100.dat.'+str(rank), 'a') as f:
+		    f.write('%d\t%f\t%f\t%f\t%f\n' % (epoch,test_loss,test_acc,train_loss,train_acc))
+		if test_acc > 0.65:
+			break
