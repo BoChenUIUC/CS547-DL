@@ -10,6 +10,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim     
 from torch.autograd import Variable 
+import numpy as np
+
 cmd = "/sbin/ifconfig"
 out, err = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
 	stderr=subprocess.PIPE).communicate()
