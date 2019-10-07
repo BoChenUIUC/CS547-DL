@@ -47,10 +47,10 @@ transform_test = transforms.Compose([
 
 # For trainning data
 trainset = torchvision.datasets.CIFAR100(root='~/scratch/.', train=True,download=False, transform=transform_train)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=100, shuffle=True, num_workers=0)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=128, shuffle=True, num_workers=0)
 # For testing data
 testset = torchvision.datasets.CIFAR100(root='~/scratch/.', train=False,download=False, transform=transform_test)
-testloader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False, num_workers=0)
+testloader = torch.utils.data.DataLoader(testset, batch_size=128, shuffle=False, num_workers=0)
 
 
 class BasicBlock(nn.Module):
@@ -145,8 +145,7 @@ def eval(dataloader):
 		images = Variable(images).cuda()
 		labels = Variable(labels).cuda()
 
-		outputs = net(images)
-		print(outputs.shape)
+		outputs = net(images) # 100x100
 		loss = criterion(outputs, labels)
 		test_loss += loss.data[0]
 		_, preds = outputs.max(1)
