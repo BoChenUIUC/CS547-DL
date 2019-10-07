@@ -47,13 +47,9 @@ def create_val_folder(val_dir):
 			os.rename(os.path.join(path, img), os.path.join(newpath, img))
 	return
 
-# Your own directory to the train folder of tiyimagenet
 train_dir = '/u/training/instr030/scratch/tiny-imagenet-200/train/'
 train_dataset = datasets.ImageFolder(train_dir, transform=transform_train)
-# To check the index for each classes
-# print(train_dataset.class_to_idx)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=8)
-# Your own directory to the validation folder of tiyimagenet
 val_dir = '/u/training/instr030/scratch/tiny-imagenet-200/val/'
 
 if 'val_' in os.listdir(val_dir+'images/')[0]:
@@ -158,6 +154,7 @@ def eval(dataloader):
 		# correct += preds.eq(labels).sum()
 		_, pred = torch.max(outputs, 1) 
 		correct += (pred == labels).sum().item()
+	print(correct, len(dataloader.dataset))
 	return test_loss / len(dataloader.dataset), correct*1.0 / len(dataloader.dataset)
 
 with open('resnet_tinyimagenet.dat', 'w') as f:
