@@ -93,7 +93,7 @@ net.to(device)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
-train_scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[5, 15, 20, 40], gamma=0.2)
+train_scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[5, 15, 60, 100], gamma=0.2)
 
 def train():
 	net.train()
