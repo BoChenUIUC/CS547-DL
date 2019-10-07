@@ -111,9 +111,9 @@ class ResNet(nn.Module):
 
 net = ResNet(BasicBlock,[2,4,4,2],100)
 for param in net.parameters():
-    tensor0 = param.data
-    dist.all_reduce(tensor0, op=dist.reduce_op.SUM)
-    param.data = tensor0/np.sqrt(np.float(num_nodes))
+	tensor0 = param.data
+	dist.all_reduce(tensor0, op=dist.reduce_op.SUM)
+	param.data = tensor0/np.sqrt(np.float(num_nodes))
 net.cuda()
 
 criterion = nn.CrossEntropyLoss()
@@ -131,10 +131,10 @@ def train():
 		loss = criterion(outputs, labels)    
 		loss.backward()
 		for param in net.parameters():
-            tensor0 = param.grad.data.cpu()
-            dist.all_reduce(tensor0, op=dist.reduce_op.SUM)
-            tensor0 /= float(num_nodes)
-            param.grad.data = tensor0.cuda()                      
+			tensor0 = param.grad.data.cpu()
+			dist.all_reduce(tensor0, op=dist.reduce_op.SUM)
+			tensor0 /= float(num_nodes)
+			param.grad.data = tensor0.cuda()                      
 		optimizer.step()
 		if batch_idx%100==99: 
 			print(batch_idx,loss.item())
