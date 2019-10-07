@@ -47,10 +47,10 @@ def create_val_folder(val_dir):
 			os.rename(os.path.join(path, img), os.path.join(newpath, img))
 	return
 
-train_dir = '/u/training/instr030/scratch/tiny-imagenet-200/train/'
+train_dir = '/u/training/tra169/scratch/tiny-imagenet-200/train/'
 train_dataset = datasets.ImageFolder(train_dir, transform=transform_train)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=8)
-val_dir = '/u/training/instr030/scratch/tiny-imagenet-200/val/'
+val_dir = '/u/training/tra169/scratch/tiny-imagenet-200/val/'
 
 if 'val_' in os.listdir(val_dir+'images/')[0]:
     create_val_folder(val_dir)
