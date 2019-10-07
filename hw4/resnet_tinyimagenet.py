@@ -10,8 +10,7 @@ import torch.nn.functional as F
 import torch.optim as optim  
 from torch.autograd import Variable 
 
-num_epochs = 1
-batch_size = 128
+batch_size = 64
 
 transform_train = transforms.Compose([
 	transforms.RandomCrop(64, padding=4),
