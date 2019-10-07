@@ -49,10 +49,10 @@ transform_test = transforms.Compose([
 
 # For trainning data
 trainset = torchvision.datasets.CIFAR100(root='~/scratch/.', train=True,download=False, transform=transform_train)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True, num_workers=0)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=100, shuffle=True, num_workers=0)
 # For testing data
 testset = torchvision.datasets.CIFAR100(root='~/scratch/.', train=False,download=False, transform=transform_test)
-testloader = torch.utils.data.DataLoader(testset, batch_size=32, shuffle=False, num_workers=0)
+testloader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False, num_workers=0)
 
 
 class BasicBlock(nn.Module):
@@ -157,15 +157,16 @@ def eval(dataloader):
 	return test_loss / len(dataloader.dataset), correct.float() / len(dataloader.dataset)
 
 if __name__=='__main__':
-	num_epochs = 1000
+	num_epochs = 100
 	for epoch in range(num_epochs):
 		train()
-		test_loss,test_acc = eval(testloader)
-		train_loss,train_acc  =eval(trainloader)
-		train_scheduler.step(epoch)
-		print('[%d]Epoch:%d, test_loss:%f, test_accuracy:%f, train_loss:%f, train_accuracy:%f' \
-				% (rank,epoch,test_loss,test_acc,train_loss,train_acc))
-		with open('sync_sgd_cifar100.dat', 'a') as f:
-		    f.write('%d\t%d\t%f\t%f\t%f\t%f\n' % (rank,epoch,test_loss,test_acc,train_loss,train_acc))
-		if test_acc > 0.65:
-			break
+		if rank == 0:
+			test_loss,test_acc = eval(testloader)
+			train_loss,train_acc  =eval(trainloader)
+			train_scheduler.step(epoch)
+			print('[%d]Epoch:%d, test_loss:%f, test_accuracy:%f, train_loss:%f, train_accuracy:%f' \
+					% (rank,epoch,test_loss,test_acc,train_loss,train_acc))
+			with open('sync_sgd_cifar100.dat', 'a') as f:
+			    f.write('%d\t%d\t%f\t%f\t%f\t%f\n' % (rank,epoch,test_loss,test_acc,train_loss,train_acc))
+			if test_acc > 0.65:
+				break
