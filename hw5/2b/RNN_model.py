@@ -1,11 +1,3 @@
-import numpy as np
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from torch.autograd import Variable
-import torch.distributed as dist
-
 class StatefulLSTM(nn.Module):
     def __init__(self,in_size,out_size):
         super(StatefulLSTM,self).__init__()
@@ -52,9 +44,7 @@ class RNN_model(nn.Module):
     def __init__(self,vocab_size,no_of_hidden_units):
         super(RNN_model, self).__init__()
 
-        self.embedding = nn.Embedding(vocab_size,no_of_hidden_units)#,padding_idx=0)
-
-        self.lstm1 = StatefulLSTM(no_of_hidden_units,no_of_hidden_units)
+        self.lstm1 = StatefulLSTM(300,no_of_hidden_units)
         self.bn_lstm1= nn.BatchNorm1d(no_of_hidden_units)
         self.dropout1 = LockedDropout() #torch.nn.Dropout(p=0.5)
 
@@ -75,16 +65,14 @@ class RNN_model(nn.Module):
 
     def forward(self, x, t, train=True):
 
-        embed = self.embedding(x) # batch_size, time_steps, features
-
-        no_of_timesteps = embed.shape[1]
+        no_of_timesteps = x.shape[1]
 
         self.reset_state()
 
         outputs = []
         for i in range(no_of_timesteps):
 
-            h = self.lstm1(embed[:,i,:])
+            h = self.lstm1(x[:,i,:])
             h = self.bn_lstm1(h)
             h = self.dropout1(h,dropout=0.5,train=train)
 
@@ -97,10 +85,9 @@ class RNN_model(nn.Module):
         outputs = torch.stack(outputs) # (time_steps,batch_size,features)
         outputs = outputs.permute(1,2,0) # (batch_size,features,time_steps)
 
-        pool = nn.MaxPool1d(no_of_timesteps)
+        pool = nn.MaxPool1d(x.shape[1])
         h = pool(outputs)
         h = h.view(h.size(0),-1)
-        #h = self.dropout(h)
 
         h = self.fc_output(h)
 

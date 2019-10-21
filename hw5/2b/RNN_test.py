@@ -100,6 +100,7 @@ for epoch in range(no_of_epochs):
 		    else:
 		        start_index = np.random.randint(sl-sequence_length+1)
 		        x_input[j,:] = x[start_index:(start_index+sequence_length)]
+		x_input = glove_embeddings[x_input]
 		y_input = y_test[I_permutation[i:i+batch_size]]
 
 		data = Variable(torch.LongTensor(x_input)).cuda()
