@@ -9,4 +9,4 @@
 cd ~/CS547-DL/hw5/1b
 . /opt/modules/default/init/bash 
 module load bwpy
-aprun -n 1 -N 1 python 1b/BOW_sentiment_analysis.py
+aprun -n 1 -N 1 python BOW_sentiment_analysis.py
