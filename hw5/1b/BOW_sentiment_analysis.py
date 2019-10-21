@@ -141,6 +141,7 @@ for epoch in range(no_of_epochs):
 
 		data = Variable(torch.FloatTensor(x_input)).cuda()
 		target = Variable(torch.FloatTensor(y_input)).cuda()
+		print(data.shape,target.shape)
 
 		with torch.no_grad():
 		    loss, pred = model(data,target)
