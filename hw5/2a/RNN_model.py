@@ -22,3 +22,20 @@ class StatefulLSTM(nn.Module):
         self.h, self.c = self.lstm(x,(self.h,self.c))
 
         return self.h
+
+class LockedDropout(nn.Module):
+    def __init__(self):
+        super(LockedDropout,self).__init__()
+        self.m = None
+
+    def reset_state(self):
+        self.m = None
+
+    def forward(self, x, dropout=0.5, train=True):
+        if train==False:
+            return x
+        if(self.m is None):
+            self.m = x.data.new(x.size()).bernoulli_(1 - dropout)
+        mask = Variable(self.m, requires_grad=False) / (1 - dropout)
+
+        return mask * x
