@@ -47,7 +47,7 @@ y_test[0:12500] = 1
 
 vocab_size += 1
 
-model = BOW_model(vocab_size,100)
+model = BOW_model(vocab_size,50)
 model.cuda()
 
 # opt = 'sgd'
