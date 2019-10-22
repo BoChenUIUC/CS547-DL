@@ -47,7 +47,7 @@ y_test[0:12500] = 1
 
 vocab_size += 1
 
-model = RNN_model(vocab_size,500)
+model = RNN_model(vocab_size,300)
 model.cuda()
 
 # opt = 'sgd'
@@ -87,7 +87,7 @@ for epoch in range(no_of_epochs):
 	for i in range(0, L_Y_train, batch_size):
 
 		x_input2 = [x_train[j] for j in I_permutation[i:i+batch_size]]
-		sequence_length = 250
+		sequence_length = 100
 		x_input = np.zeros((batch_size,sequence_length),dtype=np.int)
 		for j in range(batch_size):
 		    x = np.asarray(x_input2[j])
