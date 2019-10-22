@@ -17,7 +17,7 @@ glove_embeddings = np.load('../preprocessed_data/glove_embeddings.npy')
 vocab_size = 100000
 
 x_train = []
-with io.open('../preprocessed_data/imdb_train.txt','r',encoding='utf-8') as f:
+with io.open('../preprocessed_data/imdb_train_glove.txt','r',encoding='utf-8') as f:
 	lines = f.readlines()
 for line in lines:
 	line = line.strip()
@@ -32,7 +32,7 @@ y_train = np.zeros((25000,))
 y_train[0:12500] = 1
 
 x_test = []
-with io.open('../preprocessed_data/imdb_test.txt','r',encoding='utf-8') as f:
+with io.open('../preprocessed_data/imdb_test_glove.txt','r',encoding='utf-8') as f:
 	lines = f.readlines()
 for line in lines:
 	line = line.strip()
@@ -87,7 +87,7 @@ for epoch in range(no_of_epochs):
 	for i in range(0, L_Y_train, batch_size):
 
 		x_input2 = [x_train[j] for j in I_permutation[i:i+batch_size]]
-		sequence_length = 200
+		sequence_length = 100
 		x_input = np.zeros((batch_size,sequence_length),dtype=np.int)
 		for j in range(batch_size):
 		    x = np.asarray(x_input2[j])
