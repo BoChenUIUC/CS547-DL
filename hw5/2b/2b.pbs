@@ -10,4 +10,4 @@ cd ~/CS547-DL/hw5/2b
 . /opt/modules/default/init/bash 
 module load python/2.0.1
 #module load cudatoolkit
-aprun -n 1 -N 1 python RNN_test.py
+aprun -n 1 -N 1 python RNN_sentiment_analysis.py
