@@ -23,6 +23,7 @@ word_to_id = {token: idx for idx, token in enumerate(imdb_dictionary)}
 
 model = torch.load('language.model')
 print('model loaded...')
+print(model)
 model.cuda()
 
 model.eval()
