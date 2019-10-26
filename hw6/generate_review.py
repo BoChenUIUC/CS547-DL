@@ -77,6 +77,7 @@ review = []
 for j in range(length_of_review):
 
 	## sample a word from the previous output
+	print(output.shape)
 	output = output/temperature
 	probs = torch.exp(output)
 	probs[:,0] = 0.0
