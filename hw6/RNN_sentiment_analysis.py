@@ -82,9 +82,9 @@ for param in model.fc_output.parameters():
 opt = 'adam'
 LR = 0.001
 if(opt=='adam'):
-	optimizer = optim.Adam(model.parameters(), lr=LR)
+	optimizer = optim.Adam(params, lr=LR)
 elif(opt=='sgd'):
-	optimizer = optim.SGD(model.parameters(), lr=LR, momentum=0.9)
+	optimizer = optim.SGD(params, lr=LR, momentum=0.9)
 
 batch_size = 200
 no_of_epochs = 20
@@ -132,7 +132,13 @@ for epoch in range(no_of_epochs):
 		optimizer.zero_grad()
 		loss, pred = model(data,target,train=True)
 		loss.backward()
-
+		if(epoch>6):
+			for group in optimizer.param_groups:
+				for p in group['params']:
+					state = optimizer.state[p]
+					if 'step' in state.keys():
+						if(state['step']>=1024):
+							state['step'] = 1000
 		optimizer.step()   # update weights
 
 		prediction = pred >= 0.0
