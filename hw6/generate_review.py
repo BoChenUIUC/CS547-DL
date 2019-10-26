@@ -68,7 +68,7 @@ outputs = torch.stack(outputs)
 outputs = outputs.permute(1,2,0)
 output = outputs[:,:,-1]
 
-temperature = 1.0 # float(sys.argv[1])
+temperature = 0.25 # float(sys.argv[1])
 length_of_review = 150
 
 review = []
