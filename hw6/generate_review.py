@@ -112,5 +112,3 @@ for review in review_words:
 		prnt_str += word
 		prnt_str += ' '
 	print(prnt_str)
-
-# temperature 1.0
