@@ -23,7 +23,6 @@ word_to_id = {token: idx for idx, token in enumerate(imdb_dictionary)}
 
 model = torch.load('language.model')
 print('model loaded...')
-print(model)
 model.cuda()
 
 model.eval()
@@ -77,7 +76,6 @@ review = []
 for j in range(length_of_review):
 
 	## sample a word from the previous output
-	print(output.shape)
 	output = output/temperature
 	probs = torch.exp(output)
 	probs[:,0] = 0.0
@@ -87,9 +85,8 @@ for j in range(length_of_review):
 
 	## predict the next word
 	embed = model.embedding(x)
-	print(x.shape,embed.shape)
 
-	h = model.lstm1(embed)
+	h = model.lstm1(embed[:,0,:])
 	h = model.bn_lstm1(h)
 	h = model.dropout1(h,dropout=0.3,train=False)
 
