@@ -70,10 +70,10 @@ params = []
 #     params.append(param)
 # for param in model.bn_lstm2.parameters():
 #     params.append(param)
-for param in model.lstm3.parameters():
-    params.append(param)
-for param in model.bn_lstm3.parameters():
-    params.append(param)
+# for param in model.lstm3.parameters():
+#     params.append(param)
+# for param in model.bn_lstm3.parameters():
+#     params.append(param)
 for param in model.fc_output.parameters():
     params.append(param)
 
