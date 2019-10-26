@@ -16,7 +16,7 @@ import sys
 
 from RNN_language_model import RNN_language_model
 
-imdb_dictionary = np.load('../preprocessed_data/imdb_dictionary.npy')
+imdb_dictionary = np.load('../hw5/preprocessed_data/imdb_dictionary.npy')
 vocab_size = 8000 + 1
 
 word_to_id = {token: idx for idx, token in enumerate(imdb_dictionary)}
