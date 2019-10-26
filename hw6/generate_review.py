@@ -75,27 +75,42 @@ review = []
 ####
 for j in range(length_of_review):
 
-    ## sample a word from the previous output
-    output = output/temperature
-    probs = torch.exp(output)
-    probs[:,0] = 0.0
-    probs = probs/(torch.sum(probs,dim=1).unsqueeze(1))
-    x = torch.multinomial(probs,1)
-    review.append(x.cpu().data.numpy()[:,0])
+	## sample a word from the previous output
+	output = output/temperature
+	probs = torch.exp(output)
+	probs[:,0] = 0.0
+	probs = probs/(torch.sum(probs,dim=1).unsqueeze(1))
+	x = torch.multinomial(probs,1)
+	review.append(x.cpu().data.numpy()[:,0])
 
-    ## predict the next word
-    embed = model.embedding(x)
+	## predict the next word
+	embed = model.embedding(x)
 
-    h = model.lstm1(embed)
-    h = model.bn_lstm1(h)
-    h = model.dropout1(h,dropout=0.3,train=False)
+	h = model.lstm1(embed)
+	h = model.bn_lstm1(h)
+	h = model.dropout1(h,dropout=0.3,train=False)
 
-    h = model.lstm2(h)
-    h = model.bn_lstm2(h)
-    h = model.dropout2(h,dropout=0.3,train=False)
+	h = model.lstm2(h)
+	h = model.bn_lstm2(h)
+	h = model.dropout2(h,dropout=0.3,train=False)
 
-    h = model.lstm3(h)
-    h = model.bn_lstm3(h)
-    h = model.dropout3(h,dropout=0.3,train=False)
+	h = model.lstm3(h)
+	h = model.bn_lstm3(h)
+	h = model.dropout3(h,dropout=0.3,train=False)
 
-    output = model.decoder(h)
+	output = model.decoder(h)
+
+review = np.asarray(review)
+review = review.T
+review = np.concatenate((token_ids,review),axis=1)
+review = review - 1
+review[review<0] = vocab_size - 1
+review_words = imdb_dictionary[review]
+for review in review_words:
+	prnt_str = ''
+	for word in review:
+		prnt_str += word
+		prnt_str += ' '
+	print(prnt_str)
+
+# temperature 1.0
