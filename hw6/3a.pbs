@@ -6,7 +6,7 @@
 #PBS -o $PBS_JOOBID.out
 #PBS -m bea
 #PBS -M boc2@illinois.edu
-cd ~/CS547-DL/hw6/3a
+cd ~/CS547-DL/hw6
 . /opt/modules/default/init/bash 
 module load python/2.0.1
 #module load cudatoolkit
