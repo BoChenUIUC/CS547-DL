@@ -60,16 +60,16 @@ model.bn_lstm3.load_state_dict(language_model.bn_lstm3.state_dict())
 model.cuda()
 
 params = []
-# for param in model.embedding.parameters():
-#     params.append(param)
-# for param in model.lstm1.parameters():
-#     params.append(param)
-# for param in model.bn_lstm1.parameters():
-#     params.append(param)
-# for param in model.lstm2.parameters():
-#     params.append(param)
-# for param in model.bn_lstm2.parameters():
-#     params.append(param)
+for param in model.embedding.parameters():
+    params.append(param)
+for param in model.lstm1.parameters():
+    params.append(param)
+for param in model.bn_lstm1.parameters():
+    params.append(param)
+for param in model.lstm2.parameters():
+    params.append(param)
+for param in model.bn_lstm2.parameters():
+    params.append(param)
 for param in model.lstm3.parameters():
     params.append(param)
 for param in model.bn_lstm3.parameters():
