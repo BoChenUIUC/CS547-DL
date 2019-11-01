@@ -87,7 +87,8 @@ class discriminator(nn.Module):
 model =  discriminator()
 model.cuda()
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
+learning_rate = 0.0001
+optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
 def test():
     model.eval()
