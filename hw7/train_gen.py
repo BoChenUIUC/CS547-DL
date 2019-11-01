@@ -203,6 +203,7 @@ gen_train = 5
 if not os.path.exists('output'):
     os.mkdir('output')
 
+import time
 start_time = time.time()
 
 # Train the model
