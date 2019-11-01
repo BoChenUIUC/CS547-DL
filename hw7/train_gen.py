@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.autograd import Variable
+import torch.autograd as autograd
 
 batch_size = 128
 transform_train = transforms.Compose([
