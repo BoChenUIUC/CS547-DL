@@ -185,6 +185,7 @@ criterion = nn.CrossEntropyLoss()
 n_z = 100
 n_classes = 10
 num_epochs = 400
+import numpy as np
 
 np.random.seed(352)
 label = np.asarray(list(range(10))*10)
