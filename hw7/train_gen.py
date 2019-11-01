@@ -70,7 +70,7 @@ class discriminator(nn.Module):
         self.fc1 = nn.Linear(196, 1)
         self.fc10 = nn.Linear(196, 10)
 
-    def forward(self, x):
+    def forward(self, x, extract_features=0):
         x = self.ln1(self.lrelu1(self.conv1(x)))
         x = self.ln2(self.lrelu2(self.conv2(x)))
         x = self.ln3(self.lrelu3(self.conv3(x)))
@@ -79,6 +79,10 @@ class discriminator(nn.Module):
         x = self.ln6(self.lrelu6(self.conv6(x)))
         x = self.ln7(self.lrelu7(self.conv7(x)))
         x = self.ln8(self.lrelu8(self.conv8(x)))
+        # if(extract_features==8):
+        #     h = F.max_pool2d(x,4,4)
+        #     h = h.view(-1, 196)
+        #     return h
         x = self.pool(x)
         x = x.view(-1, 196)
         y1,y2 = self.fc1(x),self.fc10(x)
@@ -140,8 +144,8 @@ def calc_gradient_penalty(netD, real_data, fake_data):
     disc_interpolates, _ = netD(interpolates)
 
     gradients = autograd.grad(outputs=disc_interpolates, inputs=interpolates,
-                              grad_outputs=torch.ones(disc_interpolates.size()).cuda(),
-                              create_graph=True, retain_graph=True, only_inputs=True)[0]
+                                grad_outputs=torch.ones(disc_interpolates.size()).cuda(),
+                                create_graph=True, retain_graph=True, only_inputs=True)[0]
 
     gradients = gradients.view(gradients.size(0), -1)
     gradient_penalty = ((gradients.norm(2, dim=1) - 1) ** 2).mean() * LAMBDA
@@ -193,10 +197,21 @@ save_noise = Variable(save_noise).cuda()
 
 gen_train = 5
 
+if not os.path.exists('output'):
+    os.mkdir('output')
+
 start_time = time.time()
 
 # Train the model
 for epoch in range(0,num_epochs):
+
+    # before epoch training loop starts
+    loss1 = []
+    loss2 = []
+    loss3 = []
+    loss4 = []
+    loss5 = []
+    acc1 = []
 
     aG.train()
     aD.train()
@@ -231,3 +246,98 @@ for epoch in range(0,num_epochs):
             gen_cost.backward()
 
             optimizer_g.step()
+
+            # train D
+            for p in aD.parameters():
+                p.requires_grad_(True)
+
+            aD.zero_grad()
+
+            # train discriminator with input from generator
+            label = np.random.randint(0,n_classes,batch_size)
+            noise = np.random.normal(0,1,(batch_size,n_z))
+            label_onehot = np.zeros((batch_size,n_classes))
+            label_onehot[np.arange(batch_size), label] = 1
+            noise[np.arange(batch_size), :n_classes] = label_onehot[np.arange(batch_size)]
+            noise = noise.astype(np.float32)
+            noise = torch.from_numpy(noise)
+            noise = Variable(noise).cuda()
+            fake_label = Variable(torch.from_numpy(label)).cuda()
+            with torch.no_grad():
+                fake_data = aG(noise)
+
+            disc_fake_source, disc_fake_class = aD(fake_data)
+
+            disc_fake_source = disc_fake_source.mean()
+            disc_fake_class = criterion(disc_fake_class, fake_label)
+
+            # train discriminator with input from the discriminator
+            real_data = Variable(X_train_batch).cuda()
+            real_label = Variable(Y_train_batch).cuda()
+
+            disc_real_source, disc_real_class = aD(real_data)
+
+            prediction = disc_real_class.data.max(1)[1]
+            accuracy = ( float( prediction.eq(real_label.data).sum() ) /float(batch_size))*100.0
+
+            disc_real_source = disc_real_source.mean()
+            disc_real_class = criterion(disc_real_class, real_label)
+
+            gradient_penalty = calc_gradient_penalty(aD,real_data,fake_data)
+
+            disc_cost = disc_fake_source - disc_real_source + disc_real_class + disc_fake_class + gradient_penalty
+            disc_cost.backward()
+
+            optimizer_d.step()
+
+            # within the training loop
+            loss1.append(gradient_penalty.item())
+            loss2.append(disc_fake_source.item())
+            loss3.append(disc_real_source.item())
+            loss4.append(disc_real_class.item())
+            loss5.append(disc_fake_class.item())
+            acc1.append(accuracy)
+            if((batch_idx%50)==0):
+                print(epoch, batch_idx, "%.2f" % np.mean(loss1),
+                                        "%.2f" % np.mean(loss2),
+                                        "%.2f" % np.mean(loss3),
+                                        "%.2f" % np.mean(loss4),
+                                        "%.2f" % np.mean(loss5),
+                                        "%.2f" % np.mean(acc1))
+
+    # Test the model
+    aD.eval()
+    with torch.no_grad():
+        test_accu = []
+        for batch_idx, (X_test_batch, Y_test_batch) in enumerate(testloader):
+            X_test_batch, Y_test_batch= Variable(X_test_batch).cuda(),Variable(Y_test_batch).cuda()
+
+            with torch.no_grad():
+                _, output = aD(X_test_batch)
+
+            prediction = output.data.max(1)[1] # first column has actual prob.
+            accuracy = ( float( prediction.eq(Y_test_batch.data).sum() ) /float(batch_size))*100.0
+            test_accu.append(accuracy)
+            accuracy_test = np.mean(test_accu)
+    print('Testing',accuracy_test, time.time()-start_time)
+
+    ### save output
+    with torch.no_grad():
+        aG.eval()
+        samples = aG(save_noise)
+        samples = samples.data.cpu().numpy()
+        samples += 1.0
+        samples /= 2.0
+        samples = samples.transpose(0,2,3,1)
+        aG.train()
+
+    fig = plot(samples)
+    plt.savefig('output/%s.png' % str(epoch).zfill(3), bbox_inches='tight')
+    plt.close(fig)
+
+    if(((epoch+1)%1)==0):
+        torch.save(aG,'tempG.model')
+        torch.save(aD,'tempD.model')
+
+torch.save(aG,'generator.model')
+torch.save(aD,'discriminator.model')
