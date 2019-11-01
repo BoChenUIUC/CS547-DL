@@ -91,8 +91,8 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 
 def test():
     model.eval()
-	epoch_acc = 0.0
-	epoch_loss = 0.0
+    epoch_acc = 0.0
+    epoch_loss = 0.0
     epoch_counter = 0
     for batch_idx, (X_train_batch, Y_train_batch) in enumerate(trainloader):
 
@@ -103,20 +103,20 @@ def test():
         Y_train_batch = Variable(Y_train_batch).cuda()
         _, output = model(X_train_batch)
         loss = criterion(output, Y_train_batch)
-	    _, predicted = torch.max(output.data, 1)
-	    accuracy = predicted.eq(Y_train_batch).sum().cpu().data.numpy()
+        _, predicted = torch.max(output.data, 1)
+        accuracy = predicted.eq(Y_train_batch).sum().cpu().data.numpy()
         epoch_acc += accuracy
-		epoch_loss += loss.data.item()
-		epoch_counter += batch_size
+        epoch_loss += loss.data.item()
+        epoch_counter += batch_size
 
     epoch_acc /= epoch_counter
-	epoch_loss /= (epoch_counter/batch_size)
+    epoch_loss /= (epoch_counter/batch_size)
     print("  %.2f" % (epoch_acc*100.0), "%.4f" % epoch_loss)
 
 def train(epoch):
     model.train()
     epoch_acc = 0.0
-	epoch_loss = 0.0
+    epoch_loss = 0.0
     epoch_counter = 0
     for batch_idx, (X_train_batch, Y_train_batch) in enumerate(trainloader):
 
@@ -140,12 +140,12 @@ def train(epoch):
                             state['step'] = 1000
         optimizer.step()
         _, predicted = torch.max(output.data, 1)
-	    accuracy = predicted.eq(Y_train_batch).sum().cpu().data.numpy()
+        accuracy = predicted.eq(Y_train_batch).sum().cpu().data.numpy()
         epoch_acc += accuracy
-		epoch_loss += loss.data.item()
-		epoch_counter += batch_size
+        epoch_loss += loss.data.item()
+        epoch_counter += batch_size
     epoch_acc /= epoch_counter
-	epoch_loss /= (epoch_counter/batch_size)
+    epoch_loss /= (epoch_counter/batch_size)
     print(epoch, "  %.2f" % (epoch_acc*100.0), "%.4f" % epoch_loss)
 
 
@@ -156,7 +156,7 @@ for epoch in range(1,100):
     if(epoch==75):
         for param_group in optimizer.param_groups:
             param_group['lr'] = learning_rate/100.0
-	train(epoch)
-	test()
+    train(epoch)
+    test()
 
 torch.save(model,'cifar10.model')
