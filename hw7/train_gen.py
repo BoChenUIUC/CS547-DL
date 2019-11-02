@@ -249,7 +249,13 @@ for epoch in range(0,num_epochs):
 
             gen_cost = -gen_source + gen_class
             gen_cost.backward()
-
+            if(epoch>6):
+                for group in optimizer_g.param_groups:
+                    for p in group['params']:
+                        state = optimizer_g.state[p]
+                        if 'step' in state.keys():
+                            if(state['step']>=1024):
+                                state['step'] = 1000
             optimizer_g.step()
 
             # train D
@@ -292,7 +298,19 @@ for epoch in range(0,num_epochs):
 
             disc_cost = disc_fake_source - disc_real_source + disc_real_class + disc_fake_class + gradient_penalty
             disc_cost.backward()
-
+            if(epoch>6):
+                for group in optimizer_g.param_groups:
+                    for p in group['params']:
+                        state = optimizer_g.state[p]
+                        if 'step' in state.keys():
+                            if(state['step']>=1024):
+                                state['step'] = 1000
+                for group in optimizer_d.param_groups:
+                    for p in group['params']:
+                        state = optimizer_d.state[p]
+                        if 'step' in state.keys():
+                            if(state['step']>=1024):
+                                state['step'] = 1000
             optimizer_d.step()
 
             # within the training loop
