@@ -84,10 +84,6 @@ class discriminator(nn.Module):
         x = self.ln6(self.lrelu6(self.conv6(x)))
         x = self.ln7(self.lrelu7(self.conv7(x)))
         x = self.ln8(self.lrelu8(self.conv8(x)))
-        # if(extract_features==8):
-        #     h = F.max_pool2d(x,4,4)
-        #     h = h.view(-1, 128)
-        #     return h
         x = self.pool(x)
         x = x.view(-1, 128)
         y1,y2 = self.fc1(x),self.fc10(x)
