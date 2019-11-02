@@ -99,7 +99,7 @@ class discriminator(nn.Module):
         return y1,y2
 
 import os
-if not os.path.exists('visualization')
+if not os.path.exists('visualization'):
     os.mkdir('visualization')
 
 model = torch.load('cifar10.model')
