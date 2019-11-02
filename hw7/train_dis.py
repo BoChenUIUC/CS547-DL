@@ -31,44 +31,45 @@ trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuff
 testset = torchvision.datasets.CIFAR10(root='./', train=False, download=False, transform=transform_test)
 testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=8)
 
+no_of_hidden_units = 196
 class discriminator(nn.Module):
     def __init__(self):
         super(discriminator, self).__init__()
-        self.conv1 = nn.Conv2d(3, 128, kernel_size=3, stride=1, padding=1)
-        self.ln1 = nn.LayerNorm([128,32,32])
+        self.conv1 = nn.Conv2d(3, no_of_hidden_units, kernel_size=3, stride=1, padding=1)
+        self.ln1 = nn.LayerNorm([no_of_hidden_units,32,32])
         self.lrelu1 = nn.LeakyReLU()
 
-        self.conv2 = nn.Conv2d(128, 128, kernel_size=3, stride=2, padding=1)
-        self.ln2 = nn.LayerNorm([128,16,16])
+        self.conv2 = nn.Conv2d(no_of_hidden_units, no_of_hidden_units, kernel_size=3, stride=2, padding=1)
+        self.ln2 = nn.LayerNorm([no_of_hidden_units,16,16])
         self.lrelu2 = nn.LeakyReLU()
 
-        self.conv3 = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1)
-        self.ln3 = nn.LayerNorm([128,16,16])
+        self.conv3 = nn.Conv2d(no_of_hidden_units, no_of_hidden_units, kernel_size=3, stride=1, padding=1)
+        self.ln3 = nn.LayerNorm([no_of_hidden_units,16,16])
         self.lrelu3 = nn.LeakyReLU()
 
-        self.conv4 = nn.Conv2d(128, 128, kernel_size=3, stride=2, padding=1)
-        self.ln4 = nn.LayerNorm([128,8,8])
+        self.conv4 = nn.Conv2d(no_of_hidden_units, no_of_hidden_units, kernel_size=3, stride=2, padding=1)
+        self.ln4 = nn.LayerNorm([no_of_hidden_units,8,8])
         self.lrelu4 = nn.LeakyReLU()
 
-        self.conv5 = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1)
-        self.ln5 = nn.LayerNorm([128,8,8])
+        self.conv5 = nn.Conv2d(no_of_hidden_units, no_of_hidden_units, kernel_size=3, stride=1, padding=1)
+        self.ln5 = nn.LayerNorm([no_of_hidden_units,8,8])
         self.lrelu5 = nn.LeakyReLU()
 
-        self.conv6 = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1)
-        self.ln6 = nn.LayerNorm([128,8,8])
+        self.conv6 = nn.Conv2d(no_of_hidden_units, no_of_hidden_units, kernel_size=3, stride=1, padding=1)
+        self.ln6 = nn.LayerNorm([no_of_hidden_units,8,8])
         self.lrelu6 = nn.LeakyReLU()
 
-        self.conv7 = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1)
-        self.ln7 = nn.LayerNorm([128,8,8])
+        self.conv7 = nn.Conv2d(no_of_hidden_units, no_of_hidden_units, kernel_size=3, stride=1, padding=1)
+        self.ln7 = nn.LayerNorm([no_of_hidden_units,8,8])
         self.lrelu7 = nn.LeakyReLU()
 
-        self.conv8 = nn.Conv2d(128, 128, kernel_size=3, stride=2, padding=1)
-        self.ln8 = nn.LayerNorm([128,4,4])
+        self.conv8 = nn.Conv2d(no_of_hidden_units, no_of_hidden_units, kernel_size=3, stride=2, padding=1)
+        self.ln8 = nn.LayerNorm([no_of_hidden_units,4,4])
         self.lrelu8 = nn.LeakyReLU()
 
         self.pool = nn.MaxPool2d(4, 4)
-        self.fc1 = nn.Linear(128, 1)
-        self.fc10 = nn.Linear(128, 10)
+        self.fc1 = nn.Linear(no_of_hidden_units, 1)
+        self.fc10 = nn.Linear(no_of_hidden_units, 10)
 
     def forward(self, x):
         x = self.ln1(self.lrelu1(self.conv1(x)))
@@ -80,7 +81,7 @@ class discriminator(nn.Module):
         x = self.ln7(self.lrelu7(self.conv7(x)))
         x = self.ln8(self.lrelu8(self.conv8(x)))
         x = self.pool(x)
-        x = x.view(-1, 128)
+        x = x.view(-1, no_of_hidden_units)
         y1,y2 = self.fc1(x),self.fc10(x)
         return y1,y2
 
