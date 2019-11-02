@@ -88,7 +88,7 @@ class discriminator(nn.Module):
         x = x.view(-1, no_of_hidden_units)
         y1,y2 = self.fc1(x),self.fc10(x)
         return y1,y2
-        
+
 import os
 if not os.path.exists('visualization'):
     os.mkdir('visualization')
@@ -97,7 +97,7 @@ model = torch.load('cifar10.model')
 model.cuda()
 model.eval()
 
-batch_idx, (X_batch, Y_batch) = testloader.next()
+batch_idx, (X_batch, Y_batch) = testloader.__next__()
 X_batch = Variable(X_batch,requires_grad=True).cuda()
 Y_batch_alternate = (Y_batch + 1)%10
 Y_batch_alternate = Variable(Y_batch_alternate).cuda()
