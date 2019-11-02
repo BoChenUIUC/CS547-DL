@@ -32,7 +32,7 @@ def plot(samples):
     return fig
 
 import os
-if not os.path.exists('visualization')
+if not os.path.exists('visualization'):
     os.mkdir('visualization')
 
 model = torch.load('cifar10.model')
