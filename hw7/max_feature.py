@@ -81,7 +81,7 @@ class discriminator(nn.Module):
         x = self.ln2(self.lrelu2(self.conv2(x)))
         x = self.ln3(self.lrelu3(self.conv3(x)))
         x = self.ln4(self.lrelu4(self.conv4(x)))
-        if(extract_features==8):
+        if(extract_features==4):
             h = F.max_pool2d(x,8,8)
             h = h.view(-1, 128)
             return h
