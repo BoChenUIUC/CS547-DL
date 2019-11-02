@@ -102,6 +102,9 @@ import os
 if not os.path.exists('visualization'):
     os.mkdir('visualization')
 
+batch_idx, (X_batch, Y_batch) = testloader.__next__()
+X_batch = Variable(X_batch,requires_grad=True).cuda()
+
 model = torch.load('cifar10.model')
 model.cuda()
 model.eval()
