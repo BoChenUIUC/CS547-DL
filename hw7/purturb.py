@@ -131,6 +131,8 @@ gradients = torch.autograd.grad(outputs=loss, inputs=X_batch,
                                 grad_outputs=torch.ones(loss.size()).cuda(),
                                 create_graph=True, retain_graph=False, only_inputs=True)[0]
 
+import numpy as np
+
 # save gradient jitter
 gradient_image = gradients.data.cpu().numpy()
 gradient_image = (gradient_image - np.min(gradient_image))/(np.max(gradient_image)-np.min(gradient_image))
