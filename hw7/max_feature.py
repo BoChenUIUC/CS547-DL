@@ -119,6 +119,7 @@ lr = 0.1
 weight_decay = 0.001
 for i in range(200):
     output = model(X, 8)
+    print(output.shape)
 
     loss = -output[torch.arange(batch_size).type(torch.int64),torch.arange(196).type(torch.int64)]
     gradients = torch.autograd.grad(outputs=loss, inputs=X,
