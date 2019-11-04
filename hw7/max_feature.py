@@ -40,41 +40,41 @@ def plot(samples):
 class discriminator(nn.Module):
     def __init__(self):
         super(discriminator, self).__init__()
-        self.conv1 = nn.Conv2d(3, 128, kernel_size=3, stride=1, padding=1)
-        self.ln1 = nn.LayerNorm([128,32,32])
+        self.conv1 = nn.Conv2d(3, 196, kernel_size=3, stride=1, padding=1)
+        self.ln1 = nn.LayerNorm([196,32,32])
         self.lrelu1 = nn.LeakyReLU()
 
-        self.conv2 = nn.Conv2d(128, 128, kernel_size=3, stride=2, padding=1)
-        self.ln2 = nn.LayerNorm([128,16,16])
+        self.conv2 = nn.Conv2d(196, 196, kernel_size=3, stride=2, padding=1)
+        self.ln2 = nn.LayerNorm([196,16,16])
         self.lrelu2 = nn.LeakyReLU()
 
-        self.conv3 = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1)
-        self.ln3 = nn.LayerNorm([128,16,16])
+        self.conv3 = nn.Conv2d(196, 196, kernel_size=3, stride=1, padding=1)
+        self.ln3 = nn.LayerNorm([196,16,16])
         self.lrelu3 = nn.LeakyReLU()
 
-        self.conv4 = nn.Conv2d(128, 128, kernel_size=3, stride=2, padding=1)
-        self.ln4 = nn.LayerNorm([128,8,8])
+        self.conv4 = nn.Conv2d(196, 196, kernel_size=3, stride=2, padding=1)
+        self.ln4 = nn.LayerNorm([196,8,8])
         self.lrelu4 = nn.LeakyReLU()
 
-        self.conv5 = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1)
-        self.ln5 = nn.LayerNorm([128,8,8])
+        self.conv5 = nn.Conv2d(196, 196, kernel_size=3, stride=1, padding=1)
+        self.ln5 = nn.LayerNorm([196,8,8])
         self.lrelu5 = nn.LeakyReLU()
 
-        self.conv6 = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1)
-        self.ln6 = nn.LayerNorm([128,8,8])
+        self.conv6 = nn.Conv2d(196, 196, kernel_size=3, stride=1, padding=1)
+        self.ln6 = nn.LayerNorm([196,8,8])
         self.lrelu6 = nn.LeakyReLU()
 
-        self.conv7 = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1)
-        self.ln7 = nn.LayerNorm([128,8,8])
+        self.conv7 = nn.Conv2d(196, 196, kernel_size=3, stride=1, padding=1)
+        self.ln7 = nn.LayerNorm([196,8,8])
         self.lrelu7 = nn.LeakyReLU()
 
-        self.conv8 = nn.Conv2d(128, 128, kernel_size=3, stride=2, padding=1)
-        self.ln8 = nn.LayerNorm([128,4,4])
+        self.conv8 = nn.Conv2d(196, 196, kernel_size=3, stride=2, padding=1)
+        self.ln8 = nn.LayerNorm([196,4,4])
         self.lrelu8 = nn.LeakyReLU()
 
         self.pool = nn.MaxPool2d(4, 4)
-        self.fc1 = nn.Linear(128, 1)
-        self.fc10 = nn.Linear(128, 10)
+        self.fc1 = nn.Linear(196, 1)
+        self.fc10 = nn.Linear(196, 10)
 
     def forward(self, x, extract_features=0):
         x = self.ln1(self.lrelu1(self.conv1(x)))
@@ -83,7 +83,7 @@ class discriminator(nn.Module):
         x = self.ln4(self.lrelu4(self.conv4(x)))
         if(extract_features==4):
             h = F.max_pool2d(x,8,8)
-            h = h.view(-1, 128)
+            h = h.view(-1, 196)
             return h
         x = self.ln5(self.lrelu5(self.conv5(x)))
         x = self.ln6(self.lrelu6(self.conv6(x)))
@@ -91,10 +91,10 @@ class discriminator(nn.Module):
         x = self.ln8(self.lrelu8(self.conv8(x)))
         if(extract_features==8):
             h = F.max_pool2d(x,4,4)
-            h = h.view(-1, 128)
+            h = h.view(-1, 196)
             return h
         x = self.pool(x)
-        x = x.view(-1, 128)
+        x = x.view(-1, 196)
         y1,y2 = self.fc1(x),self.fc10(x)
         return y1,y2
 
@@ -120,7 +120,7 @@ weight_decay = 0.001
 for i in range(200):
     output = model(X, 8)
 
-    loss = -output[torch.arange(batch_size).type(torch.int64),torch.arange(128).type(torch.int64)]
+    loss = -output[torch.arange(batch_size).type(torch.int64),torch.arange(196).type(torch.int64)]
     gradients = torch.autograd.grad(outputs=loss, inputs=X,
                               grad_outputs=torch.ones(loss.size()).cuda(),
                               create_graph=True, retain_graph=False, only_inputs=True)[0]
@@ -155,7 +155,7 @@ weight_decay = 0.001
 for i in range(200):
     output = model(X, 4)
 
-    loss = -output[torch.arange(batch_size).type(torch.int64),torch.arange(128).type(torch.int64)]
+    loss = -output[torch.arange(batch_size).type(torch.int64),torch.arange(196).type(torch.int64)]
     gradients = torch.autograd.grad(outputs=loss, inputs=X,
                               grad_outputs=torch.ones(loss.size()).cuda(),
                               create_graph=True, retain_graph=False, only_inputs=True)[0]
@@ -193,7 +193,7 @@ weight_decay = 0.001
 for i in range(200):
     output = model(X, 8)
 
-    loss = -output[torch.arange(batch_size).type(torch.int64),torch.arange(128).type(torch.int64)]
+    loss = -output[torch.arange(batch_size).type(torch.int64),torch.arange(196).type(torch.int64)]
     gradients = torch.autograd.grad(outputs=loss, inputs=X,
                               grad_outputs=torch.ones(loss.size()).cuda(),
                               create_graph=True, retain_graph=False, only_inputs=True)[0]
@@ -228,7 +228,7 @@ weight_decay = 0.001
 for i in range(200):
     output = model(X, 4)
 
-    loss = -output[torch.arange(batch_size).type(torch.int64),torch.arange(128).type(torch.int64)]
+    loss = -output[torch.arange(batch_size).type(torch.int64),torch.arange(196).type(torch.int64)]
     gradients = torch.autograd.grad(outputs=loss, inputs=X,
                               grad_outputs=torch.ones(loss.size()).cuda(),
                               create_graph=True, retain_graph=False, only_inputs=True)[0]
